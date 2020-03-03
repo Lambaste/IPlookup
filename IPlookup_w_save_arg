@@ -1,0 +1,27 @@
+import csv
+import socket
+from sys import argv
+import os
+
+#'save_as' argument to save the file as specified name in directory "C:\Users\User\Desktop\Folder"
+script, file1, save_as = argv 
+
+lst, failed = [], []
+
+with open(file1) as f:
+	for line in f:
+		try:
+			x = socket.gethostbyname(line.strip())
+			lst.append((x, line))
+			l = line.rstrip('\n')
+			print(f" {l} : {x}")
+		except socket.gaierror:
+			failed.append(line.strip())
+			
+print("Failed to resolve the following hosts: ")
+print("\n".join(failed))
+
+full_path = os.path.join(r"C:\Users\User\Desktop\Folder", save_as)
+with open(full_path, 'w', newline='')as r:
+    writer = csv.writer(r, delimiter=",")
+    writer.writerows(lst)
