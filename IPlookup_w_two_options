@@ -1,0 +1,66 @@
+import csv
+import socket
+import os.path
+
+failed, resolved = [], []
+
+def resolveFile():	
+	with open(file1) as f:
+		for line in f:
+			try:
+				jj = socket.gethostbyname(line.strip())
+				resolved.append((jj, line))
+				l = line.rstrip('\n')
+				print(f" {jj} : {y}")
+			except socket.gaierror:
+				failed.append(line.strip())
+
+	print("\nFailed to resolve the following hosts: ")
+	print("\n".join(failed))
+	
+	try:
+		with open(r"resolved_hosts.csv", 'w', newline='') as r:
+			writer = csv.writer(r, delimiter=",")
+			writer.writerows(resolved)
+		print(f"\nfile 'resolved_hosts.csv' has been saved in {os.path.dirname(os.path.abspath(__file__))}")
+	except PermissionError:
+		print("\nError: Could not dump IP's to file as 'resolved_hosts.csv' is already open, please close and try again")
+
+def resolveCMD():
+	cmdlist = entry.split(",")
+	for elem in cmdlist:
+		try:
+			kk = socket.gethostbyname(elem)
+			resolved.append((kk, elem))
+			print(f"\n{elem} : {kk}")
+		except socket.gaierror:
+			failed.append(elem)
+			
+	print("\nFailed to resolve the following hosts: ")
+	print("\n".join(failed))
+	
+	try:
+		with open(r"resolved_hosts.csv", 'w', newline='') as r:
+			writer = csv.writer(r, delimiter=",")
+			writer.writerows(resolved)
+		print(f"\nfile 'resolved_hosts.csv' has been saved in {os.path.dirname(os.path.abspath(__file__))}")
+	except PermissionError:
+		print("\nError: Could not dump IP's to file as 'resolved_hosts.csv' is already open, please close and try again")
+
+while True:
+	choice = int(input("""
+Please choose an option below:
+
+Import from file | 1
+Import from command line | 2
+>> """))
+	if choice > 2:
+		print("Invalid option, please choose 1 or 2")
+	elif choice == 1:
+		file1 = input("\nName the file you want >> ")
+		resolveFile()
+		break
+	elif choice == 2:
+		entry = input("\nInput domains(comma seperated) >> ")
+		resolveCMD()
+		break
