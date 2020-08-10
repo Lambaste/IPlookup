@@ -4,7 +4,7 @@ import socket
 def look():
     file1 = str(input("Choose File: "))
     failed, lst = [], []
-   
+
     with open(file1) as f:
         for line in f:
             try:
@@ -14,12 +14,12 @@ def look():
                 print(f" {l} : {x}")
             except socket.gaierror:
                 failed.append(line.strip())
-
-    print("Failed to resolve the following hosts: ")
-    print("\n".join(failed))
+    if failed != []:
+        print("Failed to resolve the following hosts: ")
+        print("\n".join(failed))
 
     with open(r"resolved_hosts.csv", 'w', newline='') as r:
         writer = csv.writer(r, delimiter=",")
         writer.writerows(lst)
-        
+
 look()
